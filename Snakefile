@@ -54,8 +54,8 @@ rule assembly_qc:
         quast \
             -o {params.outdir} \
             -l {wildcards.sample} \
-            {input.R1} \
-            {input.R2} \
+            -1 {input.R1} \
+            -2 {input.R2} \
             -t {threads} --glimmer \
             {input.assembly}
         """
