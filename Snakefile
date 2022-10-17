@@ -7,7 +7,7 @@ rule all:
     input:
         #"results/typing/all_mlst.out",
         expand("results/{sample}/qc/quast/{sample}/report.pdf", sample=samples),
-        expand("results/sequence_typing/{sample}_rmlst.json", sample=samples)
+        expand("results/{sample}/sequence_typing/{sample}_rmlst.json", sample=samples)
 
 rule assembly:
     input:
@@ -64,7 +64,7 @@ rule rmlst_api:
     input:
         assembly = rules.assembly.output.final_file,
     output:
-        rmlst_json     = "results/sequence_typing/{sample}_rmlst.json",
+        rmlst_json     = "results/{sample}/sequence_typing/{sample}_rmlst.json",
         #rmlst_tab      = "results/sequence_typing/{sample}_rmlst.tab")
     params:
         outdir = lambda wildcards, output: os.path.split(output.rmlst_json)[0]
@@ -75,4 +75,4 @@ rule rmlst_api:
     log:
         "logs/sequence_typing/rmlst/{sample}.log"
     script:
-        "scripts/rmlst.2.py"
+        "scripts/rmlst.py"

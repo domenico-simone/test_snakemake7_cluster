@@ -1,4 +1,4 @@
-import glob, os, sys
+import glob, os, sys, requests, base64
 from snakemake import shell
 
 sample        = snakemake.wildcards.sample
@@ -8,6 +8,8 @@ output_json   = snakemake.output.rmlst_json
 #output_tab    = snakemake.output.rmlst_tab
 threads       = snakemake.threads
 log           = snakemake.log[0]
+
+print("Hello!")
 
 with open(log, "w") as f:
     sys.stderr = sys.stdout = f
@@ -22,16 +24,19 @@ with open(log, "w") as f:
         try: 
             data['taxon_prediction']
         except KeyError:
-            print("No match")
+            f.write("No match")
             sys.exit(0)
         for match in data['taxon_prediction']:
-                print("Rank: " + match['rank'])
-                print("Taxon:" + match['taxon'])
-                print("Support:" + str(match['support']) + "%")
-                print("Taxonomy" + match['taxonomy'] + "\n")
+                f.write("Rank: " + match['rank'] + "\n")
+                f.write("Taxon: " + match['taxon'] + "\n")
+                f.write("Support: " + str(match['support']) + "%\n")
+                f.write("Taxonomy: " + match['taxonomy'] + "\n")
     
     else:
-        print(response.text)
+        f.write(response.text)
     
     with open(output_json, 'w') as outhandle_output_json:
         outhandle_output_json.write(json.dumps(data, indent=4))
+
+f.close()
+
