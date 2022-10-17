@@ -65,7 +65,7 @@ rule rmlst_api:
         assembly = rules.assembly.output.final_file,
     output:
         rmlst_json     = "results/{sample}/sequence_typing/{sample}_rmlst.json",
-        #rmlst_tab      = "results/sequence_typing/{sample}_rmlst.tab")
+        rmlst_tab      = "results/{sample}/sequence_typing/{sample}_rmlst.tab"
     params:
         outdir = lambda wildcards, output: os.path.split(output.rmlst_json)[0]
     # conda:
