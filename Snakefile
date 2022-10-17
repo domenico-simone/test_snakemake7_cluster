@@ -1,7 +1,7 @@
 samples = ["A", "B"]
 
 # all rules are assembly, assembly_qc, rMLST
-localrules: all, rmlst
+localrules: all, rmlst_api
 
 rule all:
     input:
