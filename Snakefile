@@ -75,4 +75,4 @@ rule rmlst_api:
     log:
         "logs/sequence_typing/rmlst/{sample}.log"
     script:
-        "scripts/rmlst.py"
+        "scripts/rmlst.2.py"
