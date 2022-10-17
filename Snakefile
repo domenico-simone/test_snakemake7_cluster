@@ -16,10 +16,12 @@ rule assembly:
     output:
         final_file = "results/{sample}/assembly/spades/scaffolds.fasta"
     threads: 5
+    group:
+        "group1"
     params:
         outdir = lambda wildcards, output: output.final_file.replace("/scaffolds.fasta", "")
-    conda:
-        "envs/mapping.yaml"
+    # conda:
+    #     "envs/mapping.yaml"
     shell:
         """
         spades.py \
@@ -39,8 +41,10 @@ rule assembly_qc:
         pdf = "results/{sample}/qc/quast/{sample}/report.pdf"
     params:
         outdir = lambda wildcards, output: output.pdf.replace("/report.pdf", "")
-    conda:
-        "envs/quast.yml"
+    group:
+        "group1"
+    # conda:
+    #     "envs/quast.yml"
     threads:
         10
 #    log:
@@ -72,4 +76,3 @@ rule rmlst_api:
         "logs/sequence_typing/rmlst/{sample}.log"
     script:
         "scripts/rmlst.py"
-

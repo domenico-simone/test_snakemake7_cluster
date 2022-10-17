@@ -21,3 +21,22 @@ conda create -n test_snakemake7_cluster \
     -c conda-forge -c bioconda \
     snakemake spades biopython quast
 ```
+
+## Run
+
+```bash
+conda activate test_snakemake7_cluster
+
+mkdir -p logs
+
+snakemake \
+-j 2 \
+--cluster "sbatch \
+-A ELIX5_simone \
+-p g100_usr_prod \
+--mem=160GB \
+--time=10:00 \
+-N 1 -n 20 \
+-J {rulename}.{wildcards.sample} -o logs/{rulename}.{wildcards.sample}.out \
+--mail-type=ALL --mail-user=dome.simone@gmail.com" 
+```
