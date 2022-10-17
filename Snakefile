@@ -1,12 +1,12 @@
 samples = ["A", "B"]
 
 # all rules are assembly, assembly_qc, rMLST
-local_rules: rMLST
+localrules: all, rmlst
 
 rule all:
     input:
-        "results/typing/all_mlst.out",
-        expand("results/{sample}/qc/quast/{sample}/report.pdf"), sample=samples),
+        #"results/typing/all_mlst.out",
+        expand("results/{sample}/qc/quast/{sample}/report.pdf", sample=samples),
         expand("results/sequence_typing/{sample}_rmlst.json", sample=samples)
 
 rule assembly:
@@ -14,7 +14,7 @@ rule assembly:
         R1 = "data/{sample}_R1.fastq.gz",
         R2 = "data/{sample}_R2.fastq.gz"
     output:
-        final_file = os.path.join(results_dir, "results/{sample}/assembly/spades/scaffolds.fasta")
+        final_file = "results/{sample}/assembly/spades/scaffolds.fasta"
     threads: 5
     params:
         outdir = lambda wildcards, output: output.final_file.replace("/scaffolds.fasta", "")
@@ -36,31 +36,31 @@ rule assembly_qc:
         R1 = "data/{sample}_R1.fastq.gz",
         R2 = "data/{sample}_R2.fastq.gz"
     output:
-        pdf = "results/{sample}/qc/quast/{sample}/report.pdf")
+        pdf = "results/{sample}/qc/quast/{sample}/report.pdf"
     params:
         outdir = lambda wildcards, output: output.pdf.replace("/report.pdf", "")
     conda:
         "envs/quast.yml"
     threads:
         10
-    log:
-        os.path.join(results_dir, "{sample}/logs/qc/quast/{sample}.log")
+#    log:
+#        os.path.join(results_dir, "{sample}/logs/qc/quast/{sample}.log")
     shell:
         """
         quast \
-            -o {outdir} \
-            -l {sample} \
-            input.R1 \
-            input.R2 \
+            -o {params.outdir} \
+            -l {wildcards.sample} \
+            {input.R1} \
+            {input.R2} \
             -t {threads} --glimmer \
-            {assembly}
+            {input.assembly}
         """
 
 rule rmlst_api:
     input:
         assembly = rules.assembly.output.final_file,
     output:
-        rmlst_json     = "results/sequence_typing/{sample}_rmlst.json"),
+        rmlst_json     = "results/sequence_typing/{sample}_rmlst.json",
         #rmlst_tab      = "results/sequence_typing/{sample}_rmlst.tab")
     params:
         outdir = lambda wildcards, output: os.path.split(output.rmlst_json)[0]
@@ -69,6 +69,7 @@ rule rmlst_api:
     threads:
         1
     log:
-        os.path.join(results_dir, "{sample}/logs/sequence_typing/rmlst/{sample}.log")
+        "logs/sequence_typing/rmlst/{sample}.log"
     script:
         "scripts/rmlst.py"
+
